@@ -1,0 +1,73 @@
+<div class="content" role="main">
+
+  <button type="button" (click)="showAddForm()">Add User</button>
+  <table border="1" style="border-collapse: collapse;">
+    <tr>
+      <td>ID</td>
+      <td>Name</td>
+      <td>Age</td>
+      <td>Gender</td>
+      <td>Village</td>
+      <td>Gewog</td>
+      <td>Dzongkhag</td>
+      <td colspan="2">Action</td>
+    </tr>
+    <tr *ngFor="let user of users;let i=index;">
+      <td>{{ i+1 }}</td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.age }}</td>
+      <td>{{ user.gender === 'M' ? 'Male' : 'Female' }}</td>
+      <td>{{ user.village.villageName }}</td>
+      <td>{{ user.village.gewog.gewogName }}</td>
+      <td>{{ user.village.gewog.dzongkhag.dzongkhagName }}</td>
+      <td colspan="2">
+        <button type="button" (click)="populateForm(user)">Edit</button>
+        &nbsp;
+        <button type="button" (click)="delete(user.id)">Delete</button>
+      </td>
+    </tr>
+  </table>
+
+  <br/>
+
+  <form [formGroup]="userForm">
+    <label>Name:</label><input type="text" formControlName="name"/>
+    <br/>
+    <label>Age:</label><input type="number" formControlName="age"/>
+    <br/>
+    <label>Gender:</label>
+    <select formControlName="gender">
+      <option value=""></option>
+      <option value="M">Male</option>
+      <option value="F">Female</option>
+    </select>
+    <br/>
+    <label>Dzongkhag:</label>
+    <select #dzongkhag formControlName="dzongkhag" (change)="getAllGewogs(dzongkhag.value)">
+      <option value=""></option>
+      <option *ngFor="let dzongkhag of dzongkhags" [value]="dzongkhag.id">
+        {{dzongkhag.dzongkhagName}}
+      </option>
+    </select>
+    <br/>
+    <label>Gewog:</label>
+    <select #gewog formControlName="gewog" (change)="getAllVillages(gewog.value)">
+      <option value=""></option>
+      <option *ngFor="let gewog of gewogs" [value]="gewog.id">
+        {{gewog.gewogName}}
+      </option>
+    </select>
+    <br/>
+    <label>Village:</label>
+    <select formControlName="village">
+      <option value=""></option>
+      <option *ngFor="let village of villages" [value]="village.id">
+        {{village.villageName}}
+      </option>
+    </select>
+    <br/>
+    <button *ngIf="!showUpdateButton" type="button" (click)="add()">Add</button>
+    <button *ngIf="showUpdateButton" type="button" (click)="update()">Update</button>
+  </form>
+
+</div>
